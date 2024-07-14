@@ -1,173 +1,232 @@
-# [App Name] Integration Guide
+# Product Management System DOCUMENTATION
+
+## Table of Contents
+* [Overview](#Overview)
+* [Entities and Relationships](Entities and Relationships)
+* [API Endpoints](API Endpoints)
+
+# Product Management System
 
 ## Overview
 
-[Description]
+This document outlines the database schema and API endpoints for a product management system. The schema is defined using DBML and covers core functionalities such as user management, organizations, authentication, payments, notifications, and more.
 
-## Folder Structure
+## Entities and Relationships
 
-```
-|--- .vscode
-|--- src
-|    |--- Hng.Application
-|    |--- Hng.Application.Test
-|    |--- Hng.Domain
-|    |--- Hng.Infrastructure
-|    |--- Hng.web
-|         |--- Controllers
-|         |--- Program.cs
-|         |--- .dockerignore
-|         |--- Dockerfile
-|         |--- appsettings.json
-|         |--- appsettings.Development.json
-|--- .gitignore
-|--- Hng.Csharp.Web.sln
-```
+### Users
+Represents a user entity with attributes such as id, name, email, password, and other personal details. A User has many activity logs, notifications, blogs, messages, authentication methods, random data, payments, and invites. A user has one profile setting.
 
-## Getting started
+### Organisation
+Represents an organization entity with attributes such as id, description, creation and update timestamps. Many Users can belong to many organizations through UserOrganization.
 
-Ensure you have your computer setup correctly for development by installing the following
+### UserOrganisation
+Represents the relationship between users and organizations, with attributes like id, user_id, or_id, and role.
 
-- .Net 8 with C# 12.0
-- Visual studio 2019 or higher with ASP.Net web installation pack or
-- Visual studio code with .Net and C# dev extensions installed
-- Install .Net maui development pack for future uses
+### EmailTemplate
+Represents an email template entity with attributes such as id, name, subject, body, and timestamps. One Template can have many messages.
 
-## Contribution Guide
+### Contact
+Represents a contact entity with attributes such as id, contact name, contact email, and contact message.
 
-#### If you don't have git on your machine, [install it](https://docs.github.com/en/get-started/quickstart/set-up-git).
+### Notification
+Represents notifications associated with users, including id, user_id, message, read status, and creation timestamp.
 
-## Fork this repository
+### ActivityLog
+Represents an activity log entry associated with users, including id, user_id, activity type, description, and timestamp.
 
-Fork this repository by clicking on the fork button on the top of this page.
-This will create a copy of this repository in your account.
+### Blog
+Represents a blog post entity with attributes such as id, title, content, author_id, and timestamps.
 
-## Clone the repository
+### Messages
+Represents messages sent by users, including id, user_id, status, template_id, sent timestamp, and creation timestamp. Many messages to one template.
 
-<img align="right" width="300" src="https://firstcontributions.github.io/assets/Readme/clone.png" alt="clone this repository" />
+### Authentiation
+Represents authentication details such as id, user_id, auth_type, auth_token, creation timestamp, and expiration timestamp.
 
-Now clone the forked repository to your machine. Go to your GitHub account, open the forked repository, click on the code button and then click the _copy to clipboard_ icon.
+### RandomData
+Represents random data associated with users, including id, user_id, data name, and data value.
 
-Open a terminal and run the following git command:
+### ProfileSettings
+Represents the profile settings of a user, including id, user_id, language, region, timezone, and timestamps.
 
-```bash
-git clone "url you just copied"
-```
+### Payment
+Represents a payment entity with attributes such as id, user_id, amount, currency, payment method, status, and transaction_id.
 
-where "url you just copied" (without the quotation marks) is the url to this repository (your fork of this project). See the previous steps to obtain the url.
+### Waitlist
+Represents a waitlist entry with attributes such as id, email, and creation timestamp.
 
-<img align="right" width="300" src="https://firstcontributions.github.io/assets/Readme/copy-to-clipboard.png" alt="copy URL to clipboard" />
+### Invite
+Represents invitations sent to users or prospective users, with attributes like id, senders_id, receiver_email, status, and timestamps.
 
-For example:
+### Language
+Represents the languages available or preferred by users, including id, language code, and language name.
 
-```bash
-git clone git@github.com:this-is-you/hng_project.git
-```
+### REGION
+Represents the regions or geographical areas associated with users or organizations, including id, region code, and region name.
 
-where `this-is-you` is your GitHub username. Here you're copying the contents of the first-contributions repository on GitHub to your computer.
+## API Endpoints
 
-## Create a branch
+### Default
 
-Change to the repository directory on your computer (if you are not already there):
+#### POST /api/organisation
+- **Description**: Create a new organization
+- **Consumes**: `application/json`
+- **Request Body**: `CreateOrganisation` (required)
 
-```bash
-cd hng_project
-```
-
-Now create a branch using the `git switch` command:
-
-```bash
-git switch -c your-new-branch-name
+```json
+{
+  "status": "status",
+  "message": "message"
+}
 ```
 
-For example:
+- **Return Type**: `CreateOrganisationRes`
+- **Responses**:
+  - `201`: Organisation created
 
-```bash
-git switch -c add-alonzo-church
+#### GET /api/organisations/{orgId}
+- **Description**: Get organization by ID
+- **Path Parameters**:
+  - `orgId` (required)
+- **Return Type**: `CreateOrganisation`
+- **Example:**
+```json
+{
+  "createdAt": "2000-01-23T04:56:07.000+00:00",
+  "name": "John's Organisation",
+  "description": "John's default organization",
+  "orgId": "eada83aj3ae3"
+}
+
 ```
+- **Responses**:
+  - `200`: Organisation details
+  - `404`: Organisation not found
 
-### Make Changes
+#### POST /api/organisations/{orgId}/users
+- **Description**: Add user to an organisation
+- **Path Parameters**:
+  - `orgId` (required)
+- **Consumes**: `application/json`
+- **Request Body**: `OrganisationAddUserRequest` (required)
+```json
+{
+  "message": "message",
+  "status": "status"
+}
 
-Make your changes to the codebase. Ensure your code follows the project's coding standards and guidelines.
-
-### Run Tests
-
-Run the existing tests to ensure your changes do not break anything. If you added new functionality, write corresponding tests and run them.
-
-## commit those changes
-
-Now open `Contributors.md` file in a text editor, add your name to it. Don't add it at the beginning or end of the file. Put it anywhere in between. Now, save the file.
-
-<img align="right" width="450" src="https://firstcontributions.github.io/assets/Readme/git-status.png" alt="git status" />
-
-If you go to the project directory and execute the command `git status`, you'll see there are changes.
-
-Add those changes to the branch you just created using the `git add` command:
-
-## Push changes to GitHub
-
-Push your changes using the command `git push`:
-
-```bash
-git push -u origin your-branch-name
 ```
+- **Return Type**: `OrganisationAddUserRes`
+- **Responses**:
+  - `200`: User added to organisation
 
-replacing `your-branch-name` with the name of the branch you created earlier.
-
-<details>
-<summary> <strong>If you get any errors while pushing, click here:</strong> </summary>
-
-- ### Authentication Error
-     <pre>remote: Support for password authentication was removed on August 13, 2021. Please use a personal access token instead.
-  remote: Please see https://github.blog/2020-12-15-token-authentication-requirements-for-git-operations/ for more information.
-  fatal: Authentication failed for 'https://github.com/<your-username>/first-contributions.git/'</pre>
-  Go to [GitHub's tutorial](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account) on generating and configuring an SSH key to your account.
-
-</details>
-
-## Submit your changes for review into Staging
-
-If you go to your repository on GitHub, you'll see a `Compare & pull request` button. Click on that button.
-
-<img style="float: right;" src="https://firstcontributions.github.io/assets/Readme/compare-and-pull.png" alt="create a pull request" />
-
-Now submit the pull request.
-
-<img style="float: right;" src="https://firstcontributions.github.io/assets/Readme/submit-pull-request.png" alt="submit pull request" />
-
-Soon your changes will be merged into the staging branch of this project. You will get a notification email once the changes have been merged.
-
-## Setup Instructions
-
-### 1. Clone the Repository
-
-First, clone the repository to your local machine using Git.
-
-```sh
-git clone https://github.com/your-username/[app-name].git
-cd [app-name]
+#### GET /api/users
+- **Description**: Get all users
+- **Return Type**: array of `RegisterRequest`
+- **Example:**
+```json
+[ {
+  "firstName" : "John",
+  "lastName" : "cena",
+  "createdAt" : "2000-01-23T04:56:07.000+00:00",
+  "password" : "password",
+  "role" : 0,
+  "userName" : "johnCena",
+  "userid" : "uuid37aeuau3ja",
+  "email" : "user@gmail.com"
+}, {
+  "firstName" : "John",
+  "lastName" : "cena",
+  "createdAt" : "2000-01-23T04:56:07.000+00:00",
+  "password" : "password",
+  "role" : 0,
+  "userName" : "johnCena",
+  "userid" : "uuid37aeuau3ja",
+  "email" : "user@gmail.com"
+} ]
 ```
+- **Responses**:
+  - `200`: A list of users
 
-### 2. Install Dependencies
-
-Opening the solution in Visual studio should automatically restore all your dependencies, you can ensure this by right clicking on the solution explorer and clicking `Restore dependencies`.
-
-If you are using Vscode with the required installations mentioned above, navigate to the project directory and install the required dependencies.
-
-```sh
-dotnet restore
+#### GET /api/users/{userId}
+- **Description**: Get a user by ID
+- **Path Parameters**:
+  - `userId` (required)
+- **Return Type**: `RegisterRequest`
+- **Example:**
+```json
+{
+  "firstName" : "John",
+  "lastName" : "cena",
+  "createdAt" : "2000-01-23T04:56:07.000+00:00",
+  "password" : "password",
+  "role" : 0,
+  "userName" : "johnCena",
+  "userid" : "uuid37aeuau3ja",
+  "email" : "user@gmail.com"
+}
 ```
+- **Responses**:
+  - `200`: User details
+  - `404`: User not found
 
-### 3. Run the Development Server
-
-Press `F5` on your keyboard to run the application in debug mode for both Visual studio and Vscode (You may need to open a .cs file to trigger this).
-
-Alternatively you can `cd` into `src/Hng.Web` project and run the command
-
-```sh
-dotnet run
+#### POST /auth/login
+- **Description**: User login
+- **Consumes**: `application/json`
+- **Request Body**: `LoginRequest` (required)
+```json
+{
+  "user" : {
+    "firstName" : "John",
+    "lastName" : "cena",
+    "createdAt" : "2000-01-23T04:56:07.000+00:00",
+    "password" : "password",
+    "role" : 0,
+    "userName" : "johnCena",
+    "userid" : "uuid37aeuau3ja",
+    "email" : "user@gmail.com"
+  },
+  "token" : "token"
+}
 ```
+- **Return Type**: `LoginResponse`
+- **Responses**:
+  - `200`: Successful login
 
-### 4. Verify the Setup
+#### POST /auth/magic-link
+- **Description**: Send magic link for authentication
+- **Consumes**: `application/json`
+- **Request Body**: `MagicLinkRequest` (required)
 
-Depending on the IDE/code editor, you should be greeted with the Swagger documentation page else navigate to `/swagger` to view the documentation
+```json
+{
+  "email": "user@gmail.com"
+}
+```
+- **Responses**:
+  - `200`: Magic link sent
+  - `400`: Invalid email
+
+#### POST /auth/register
+- **Description**: User sign up
+- **Consumes**: `application/json`
+- **Request Body**: `RegisterRequest` (required)
+```json
+{
+  "firstName" : "John",
+  "lastName" : "cena",
+  "createdAt" : "2000-01-23T04:56:07.000+00:00",
+  "password" : "password",
+  "role" : 0,
+  "userName" : "johnCena",
+  "userid" : "uuid37aeuau3ja",
+  "email" : "user@gmail.com"
+}
+  ```
+- **Return Type**: `createUserResponse`
+- **Responses**:
+  - `200`: User registration successful
+
+### For more detailed information:
+## Link to Database Documentation - [https://dbdiagram.io/d/HNG-stage-3-Task-66925fed9939893daed48a64](https://dbdiagram.io/d/HNG-stage-3-Task-66925fed9939893daed48a64)
+## Link to API Documentation - [https://app.swaggerhub.com/apis-docs/ELMUBY404/HnG_Stage_3/1.0.0](https://app.swaggerhub.com/apis-docs/ELMUBY404/HnG_Stage_3/1.0.0)
