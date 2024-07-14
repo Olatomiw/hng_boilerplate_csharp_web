@@ -2,8 +2,8 @@
 
 ## Table of Contents
 * [Overview](#Overview)
-* [Entities and Relationships](#Entities and Relationships)
-* [API Endpoints](#API Endpoints)
+* [Entities and Relationships](#Entities_and_Relationships)
+* [API Endpoints](#API_Endpoints)
 
 # Product Management System
 
