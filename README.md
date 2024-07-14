@@ -5,8 +5,6 @@
 * [Entities and Relationships](#Entities-and-Relationships)
 * [API Endpoints](#API-Endpoints)
 
-# Product Management System
-
 ## Overview
 
 This document outlines the database schema and API endpoints for a product management system. The schema is defined using DBML and covers core functionalities such as user management, organizations, authentication, payments, notifications, and more.
