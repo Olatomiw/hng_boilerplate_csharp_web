@@ -1,4 +1,4 @@
-# Product Management System DOCUMENTATION
+# Product Management System Documentation
 
 ## Table of Contents
 * [Overview](#Overview)
